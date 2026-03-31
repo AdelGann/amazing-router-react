@@ -3,10 +3,6 @@
  * @author Adel Gannem a.k.a im_adelg
  */
 
-// plugins
-export * from "@amazing_router/react/plugins/vite";
-export * from "@amazing_router/react/plugins/webpack";
-
 // hooks
 export * from "@amazing_router/react/hooks/index";
 
@@ -15,3 +11,5 @@ export * from "@amazing_router/react/utils/index";
 
 // types
 export * from "@amazing_router/react/types/index";
+
+export * from "react-router";
