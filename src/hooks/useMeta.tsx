@@ -1,7 +1,13 @@
-// src/hooks/useAmazingMeta.ts
 import { useMatches } from "react-router";
 import type { AmazingRouteObject } from "../types/routes.type";
 
+/**
+ * Custom hook that reads the meta information attached to the currently active route.
+ * Meta is injected into the route's `handle` property during route transformation.
+ *
+ * @returns An object containing the resolved `title`, `description`, and any additional
+ * meta fields defined on the matched route. Falls back to default values if no meta is found.
+ */
 export const useAmazingMeta = () => {
   const matches = useMatches();
 

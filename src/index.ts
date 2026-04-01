@@ -12,4 +12,7 @@ export * from "@amazing_router/react/utils/index";
 // types
 export * from "@amazing_router/react/types/index";
 
+// provider
+export * from "@amazing_router/react/provider/RouterProvider";
+
 export * from "react-router";
