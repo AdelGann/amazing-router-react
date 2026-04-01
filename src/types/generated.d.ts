@@ -1,4 +1,3 @@
-// src/types/generated.d.ts
 declare module "/.amazing-router/*.json" {
   const value: any;
   export default value;

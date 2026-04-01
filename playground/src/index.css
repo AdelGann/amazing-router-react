@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-neon-purple: #aa3bff;
+  --color-neon-blue: #00d2ff;
+  --color-dark-surface: #16171d;
+  --color-dark-border: #2e303a;
+}
+
+@layer base {
+  body {
+    @apply bg-zinc-950 text-zinc-300 antialiased font-sans selection:bg-neon-purple/30 selection:text-white;
+  }
+}
+
+/* Glassmorphism utilities */
+.glass {
+  @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50;
+}
+
+.glass-panel {
+  @apply bg-zinc-900/50 backdrop-blur-md border border-zinc-800/50 rounded-2xl p-6 shadow-2xl;
+}
+
+/* Stunning gradient text */
+.text-gradient {
+  @apply bg-clip-text text-transparent bg-gradient-to-r from-neon-purple to-neon-blue;
+}
+
+/* Animated background glow */
+.bg-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(170,59,255,0.15) 0%, rgba(0,0,0,0) 70%);
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: -1;
+  pointer-events: none;
+}
+
+/* Premium loader animation */
+.loader-spinner {
+  width: 48px;
+  height: 48px;
+  border: 4px solid rgba(170, 59, 255, 0.2);
+  border-left-color: #aa3bff;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
