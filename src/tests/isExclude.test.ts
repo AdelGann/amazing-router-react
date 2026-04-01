@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { isExcluded } from "../helpers/isExclude";
+import { isExcluded } from "../utils/isExclude";
 
 describe("isExcluded", () => {
   it("should match excluded paths", () => {

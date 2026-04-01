@@ -1,11 +1,11 @@
 import { Navigate, Outlet } from "@amazing-router/react";
 
 export const middleware = () => {
-  const isAuthenticated = false; // tu lógica aquí
+  const isAuthenticated = true;
 
   if (!isAuthenticated) {
-    return <Navigate to="/login" />; // bloquea y redirige
+    return <Navigate to="/login" />;
   }
 
-  return <Outlet />; // permite continuar al page
+  return <Outlet />;
 };

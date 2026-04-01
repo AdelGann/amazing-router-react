@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
-import { transformRoutes } from "../utils/TransformRoutes";
-import type { RouteNode } from "@amazing-router/core";
+import { transformRoutes } from "../helpers/TransformRoutes";
+import { logger, type RouteNode } from "@amazing-router/core";
 
 /**
  * Props for the {@link AmazingProvider} component.
@@ -23,26 +23,28 @@ export const AmazingProvider = ({
   loadingElement = null,
 }: AmazingProviderProps) => {
   const [routes, setRoutes] = useState<RouteNode[]>([]);
-  const [routeFiles, setRouteFiles] = useState<Record<string, () => Promise<any>>>({});
+  const [routeFiles, setRouteFiles] = useState<
+    Record<string, () => Promise<any>>
+  >({});
 
   useEffect(() => {
     const ts = Date.now();
     const routesPath = `/.amazing-router/routes.json?t=${ts}`;
     const routeFilesPath = `/.amazing-router/routeFiles.ts?t=${ts}`;
-    
+
     Promise.all([
       import(/* @vite-ignore */ routesPath),
-      import(/* @vite-ignore */ routeFilesPath)
+      import(/* @vite-ignore */ routeFilesPath),
     ])
       .then(([routesModule, filesModule]) => {
         setRoutes(routesModule.default || []);
         setRouteFiles(filesModule.routeFiles || {});
       })
       .catch((err) => {
-        console.warn(
-          "[Amazing Router] Could not find the generated route files. Did you run the core build or forgot to configure the Vite/Webpack plugin?",
-          err
+        logger.warn(
+          "Could not find the generated route files. Did you run the core build or forgot to configure the Vite/Webpack plugin?",
         );
+        logger.error(err);
       });
   }, []);
 

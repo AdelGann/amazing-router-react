@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { transformRoutes } from "../utils/TransformRoutes";
+import { transformRoutes } from "../helpers/TransformRoutes";
 import type { RouteNode } from "@amazing-router/core";
 
 describe("transformRoutes", () => {
@@ -15,7 +15,7 @@ describe("transformRoutes", () => {
         pagePath: "./src/app/page.tsx",
       },
     ];
-    
+
     const transformed = transformRoutes(nodes, {});
     expect(transformed).toHaveLength(1);
     expect(transformed[0].id).toBe("root");
@@ -44,7 +44,7 @@ describe("transformRoutes", () => {
     expect(transformed[0].children).toBeDefined();
     expect(transformed[0].children).toHaveLength(1);
   });
-  
+
   it("should verify that group routes can ignore root layout (depending on structure)", () => {
     // Testing behavior: if core gives group route as sibling of root layout, they are independent.
     const nodes: RouteNode[] = [
@@ -57,15 +57,15 @@ describe("transformRoutes", () => {
             id: "home",
             path: "/",
             pagePath: "./src/app/page.tsx",
-          }
-        ]
+          },
+        ],
       },
       {
         id: "group-auth",
         // groups have no path contribution themselves usually or are represented similarly
         path: "/login",
         pagePath: "./src/app/(auth)/login/page.tsx",
-      }
+      },
     ];
 
     const transformed = transformRoutes(nodes, {});
