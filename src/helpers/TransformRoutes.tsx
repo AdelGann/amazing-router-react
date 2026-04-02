@@ -1,30 +1,20 @@
 import { Outlet } from "react-router";
 import type { RouteNode } from "@amazing-router/core";
 import type { AmazingRouteObject } from "../types/routes.type";
-import { getPageElement, wrapLazy } from "../utils";
-import { getLazyMiddleware } from "../utils/getMiddleware";
-import { toRelativePath } from "../utils/toRelativePath";
-import { getLayoutElement } from "../utils/getLayout";
+import {
+  getLayoutElement,
+  getLazyMiddleware,
+  toRelativePath,
+  getPageElement,
+  wrapLazy,
+} from "../utils";
 
 /**
  * Recursively transforms a tree of RouteNodes into React Router route objects.
- *
- * Path relativity rules:
- *   - Top-level nodes (parentAbsPath=undefined) keep their absolute paths so
- *     React Router registers them correctly.
- *   - Nested nodes receive ONLY the remaining segment(s) relative to their parent:
- *       parent="/about", child="/about/hola" → child path becomes "hola"
- *   - Pathless nodes (group wrappers) have NO path property at all.
- *
- * Middleware pattern:
- *   When a node has a middleware, the middleware becomes the route element.
- *   The page is injected as an index child so <Outlet /> in the middleware
- *   renders the page. Sub-routes become siblings of the index child so they
- *   are also protected by the middleware.
- *
- * @param nodes         RouteNode array from routes.json
- * @param routeFiles    Import-map from routeFiles.ts
- * @param parentAbsPath Absolute URL path of the parent (undefined = top level)
+ * Fixes:
+ * 1. Path relativity for nested children.
+ * 2. Layout nesting even without Middleware.
+ * 3. Group Route isolation.
  */
 export function transformRoutes(
   nodes: RouteNode[],
@@ -34,9 +24,11 @@ export function transformRoutes(
   const result: AmazingRouteObject[] = [];
 
   for (const node of nodes) {
+    const isGroup = node.id.startsWith("(") && node.id.endsWith(")");
+
     const routePath =
       node.path !== undefined
-        ? toRelativePath(node.path, parentAbsPath)
+        ? toRelativePath(node.path, isGroup ? undefined : parentAbsPath)
         : undefined;
 
     const route: AmazingRouteObject = {
@@ -49,42 +41,49 @@ export function transformRoutes(
     const hasMiddleware = !!node.middlewarePath;
     const hasLayout = !!node.layoutPath;
     const hasPage = !!node.pagePath;
+    const hasChildren = node.children && node.children.length > 0;
 
     if (hasMiddleware) {
       const LazyMw = getLazyMiddleware(node.middlewarePath!, routeFiles);
       route.element = LazyMw ? wrapLazy(LazyMw) : <Outlet />;
-
-      if (hasPage) {
-        route.children!.push({
-          id: `${node.id}-page`,
-          index: true,
-          element: getPageElement(node, routeFiles),
-          handle: { meta: node.meta },
-        });
-      }
     } else if (hasLayout) {
       route.element = getLayoutElement(node, routeFiles);
-
-      if (hasPage) {
-        route.children!.push({
-          id: `${node.id}-index`,
-          index: true,
-          element: getPageElement(node, routeFiles),
-          handle: { meta: node.meta },
-        });
-      }
-    } else if (hasPage) {
+    } else if (hasPage && !hasChildren) {
       route.element = getPageElement(node, routeFiles);
     } else {
       route.element = <Outlet />;
     }
 
-    if (node.children && node.children.length > 0) {
-      const childParent =
-        node.path !== undefined ? node.path : (parentAbsPath ?? "");
-      route.children!.push(
-        ...transformRoutes(node.children, routeFiles, childParent),
+    let targetChildren = route.children!;
+
+    if (hasMiddleware && hasLayout) {
+      const layoutChild: AmazingRouteObject = {
+        id: `${node.id}-layout`,
+        element: getLayoutElement(node, routeFiles),
+        children: [],
+      };
+      targetChildren.push(layoutChild);
+      targetChildren = layoutChild.children!;
+    }
+
+    // Add the page as an index if this route is a container
+    if (hasPage && (hasMiddleware || hasLayout || hasChildren)) {
+      targetChildren.push({
+        id: `${node.id}-index`,
+        index: true,
+        element: getPageElement(node, routeFiles),
+        handle: { meta: node.meta },
+      });
+    }
+
+    if (hasChildren) {
+      const nextParentPath = isGroup ? parentAbsPath : node.path;
+      const childrenRoutes = transformRoutes(
+        node.children!,
+        routeFiles,
+        nextParentPath,
       );
+      targetChildren.push(...childrenRoutes);
     }
 
     if (route.children && route.children.length === 0) {
