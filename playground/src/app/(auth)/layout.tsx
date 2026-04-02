@@ -12,7 +12,7 @@ export default function RootLayout() {
         <div className="fade-in pb-12 w-full pt-8">
           <Outlet />
         </div>
-      a
+        a
       </main>
     </div>
   );
