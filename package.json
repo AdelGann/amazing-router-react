@@ -1,6 +1,6 @@
 {
   "name": "@amazing-router/react",
-  "version": "1.1.2",
+  "version": "1.2.1",
   "description": "React adapter for Amazing Router Core using React Router under the hood",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
