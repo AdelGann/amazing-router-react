@@ -6,8 +6,7 @@
 // hooks
 export * from "@amazing_router/react/hooks/index";
 
-// utils
-export * from "@amazing_router/react/utils/index";
+export * from "@amazing_router/react/helpers/index";
 
 // types
 export * from "@amazing_router/react/types/index";
@@ -15,4 +14,5 @@ export * from "@amazing_router/react/types/index";
 // provider
 export * from "@amazing_router/react/provider/RouterProvider";
 
+export { Outlet } from "react-router";
 export * from "react-router";
