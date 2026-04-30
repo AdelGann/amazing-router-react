@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { logger } from "@amazing-router/core";
 
 export function getLazyComponent(
   filePath: string,
@@ -8,7 +7,7 @@ export function getLazyComponent(
   const normalizedPath = filePath.replace(/\\/g, "/");
   const importFn = routeFiles[normalizedPath];
   if (!importFn) {
-    logger.warn(`Missing route file for: ${normalizedPath}`);
+    console.warn(`Missing route file for: ${normalizedPath}`);
     return null;
   }
   return lazy(importFn);

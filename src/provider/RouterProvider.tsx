@@ -1,7 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import { transformRoutes } from "../helpers/TransformRoutes";
-import { logger, type RouteNode } from "@amazing-router/core";
+import type { RouteNode } from "@amazing-router/core";
 
 /**
  * Props for the {@link AmazingProvider} component.
@@ -41,10 +41,10 @@ export const AmazingProvider = ({
         setRouteFiles(filesModule.routeFiles || {});
       })
       .catch((err) => {
-        logger.warn(
+        console.warn(
           "Could not find the generated route files. Did you run the core build or forgot to configure the Vite/Webpack plugin?",
         );
-        logger.error(err);
+        console.error(err);
       });
   }, []);
 

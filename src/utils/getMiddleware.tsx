@@ -1,5 +1,4 @@
 import { lazy } from "react";
-import { logger } from "@amazing-router/core";
 
 /**
  * Middleware files use a NAMED export `middleware`, not a default export.
@@ -12,7 +11,7 @@ export function getLazyMiddleware(
   const normalizedPath = filePath.replace(/\\/g, "/");
   const importFn = routeFiles[normalizedPath];
   if (!importFn) {
-    logger.warn(`Missing middleware file for: ${normalizedPath}`);
+    console.warn(`Missing middleware file for: ${normalizedPath}`);
     return null;
   }
   return lazy(() =>
