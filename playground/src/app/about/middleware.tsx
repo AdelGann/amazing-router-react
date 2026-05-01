@@ -1,4 +1,5 @@
-import { Navigate, Outlet } from "@amazing-router/react";
+import { Navigate } from "@amazing-router/react";
+import { Outlet } from "react-router";
 
 export const middleware = () => {
   const isAuthenticated = true;
