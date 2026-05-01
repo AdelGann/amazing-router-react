@@ -28,24 +28,42 @@ export const AmazingProvider = ({
   >({});
 
   useEffect(() => {
-    const ts = Date.now();
-    const routesPath = `/.amazing-router/routes.json?t=${ts}`;
-    const routeFilesPath = `/.amazing-router/routeFiles.ts?t=${ts}`;
+    const isDev =
+      typeof process !== "undefined" && process.env.NODE_ENV === "development";
 
-    Promise.all([
-      import(/* @vite-ignore */ routesPath),
-      import(/* @vite-ignore */ routeFilesPath),
-    ])
-      .then(([routesModule, filesModule]) => {
-        setRoutes(routesModule.default || []);
-        setRouteFiles(filesModule.routeFiles || {});
-      })
-      .catch((err) => {
-        console.warn(
-          "Could not find the generated route files. Did you run the core build or forgot to configure the Vite/Webpack plugin?",
-        );
-        console.error(err);
-      });
+    if (isDev) {
+      const ts = Date.now();
+      const routesPath = `/.amazing-router/routes.json?t=${ts}`;
+      const routeFilesPath = `/.amazing-router/routeFiles.ts?t=${ts}`;
+
+      Promise.all([
+        import(/* @vite-ignore */ routesPath),
+        import(/* @vite-ignore */ routeFilesPath),
+      ])
+        .then(([routesModule, filesModule]) => {
+          setRoutes(routesModule.default || []);
+          setRouteFiles(filesModule.routeFiles || {});
+        })
+        .catch(handleImportError);
+    } else {
+      // Production: Use module aliases so bundlers can intercept them
+      Promise.all([
+        import("amazing-router-routes" as any),
+        import("amazing-router-route-files" as any),
+      ])
+        .then(([routesModule, filesModule]) => {
+          setRoutes(routesModule.default || []);
+          setRouteFiles(filesModule.routeFiles || {});
+        })
+        .catch(handleImportError);
+    }
+
+    function handleImportError(err: any) {
+      console.warn(
+        "Could not find the generated route files. Did you run the core build or forgot to configure the Vite/Webpack plugin?",
+      );
+      console.error(err);
+    }
   }, []);
 
   const router = useMemo(() => {

@@ -1,10 +1,6 @@
 {
   "name": "@amazing-router/react",
-<<<<<<< HEAD
-  "version": "1.2.2",
-=======
-  "version": "1.2.0",
->>>>>>> 60b318647622ca6c8feb400fd2dbc439b42400e3
+  "version": "1.2.3",
   "description": "React adapter for Amazing Router Core using React Router under the hood",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
@@ -17,8 +13,8 @@
     }
   },
   "scripts": {
-    "build": "tsup src/index.ts --format cjs,esm --dts --clean --external react",
-    "dev": "tsup src/index.ts --format cjs,esm --watch --dts --external react",
+    "build": "tsup src/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts --format cjs,esm --watch --dts",
     "lint": "eslint src",
     "test": "vitest run",
     "test:ui": "vitest"
